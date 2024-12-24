@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors"; // Importar el middleware CORS
 import dotenv from "dotenv";
 import { createUsersTable } from "./models/user.models.js"; // Función para crear la tabla Users
 import { createContactTable } from "./models/contact.models.js"; // Función para crear la tabla Contact
@@ -19,8 +20,10 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Middleware para parsear JSON
-app.use(express.json());
+// Configuración de CORS (permitir todos los orígenes)
+app.use(cors()); // Esto habilita CORS para **todos los orígenes**
+
+app.use(express.json()); // Middleware para parsear JSON
 
 // Inicializar la base de datos
 const initializeDatabase = async () => {
