@@ -15,7 +15,7 @@ pool
   .connect()
   .then((client) => {
     console.log("Conexión exitosa a la base de datos.");
-    client.release();
+    client.release(); // Liberar el cliente después de la conexión
   })
   .catch((err) => {
     console.error("Error al conectar a la base de datos:", err.stack);
