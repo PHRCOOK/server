@@ -32,7 +32,7 @@ const corsMiddleware = (req, res, next) => {
   );
 
   // Permite cookies y credenciales
-  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Credentials", true);
 
   // Si la solicitud es de tipo OPTIONS (preflight), respondemos con un código 200
   if (req.method === "OPTIONS") {
