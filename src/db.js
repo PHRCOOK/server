@@ -1,25 +1,25 @@
-import pg from "pg";
-import dotenv from "dotenv";
+// import pg from "pg";
+// import dotenv from "dotenv";
 
-dotenv.config();
+// dotenv.config();
 
-export const pool = new pg.Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
-  port: process.env.DB_PORT,
-});
+// export const pool = new pg.Pool({
+//   user: process.env.DB_USER,
+//   host: process.env.DB_HOST,
+//   password: process.env.DB_PASSWORD,
+//   database: process.env.DB_DATABASE,
+//   port: process.env.DB_PORT,
+// });
 
-pool
-  .connect()
-  .then((client) => {
-    console.log("Conexión exitosa a la base de datos.");
-    client.release(); // Liberar el cliente después de la conexión
-  })
-  .catch((err) => {
-    console.error("Error al conectar a la base de datos:", err.stack);
-  });
+// pool
+//   .connect()
+//   .then((client) => {
+//     console.log("Conexión exitosa a la base de datos.");
+//     client.release(); // Liberar el cliente después de la conexión
+//   })
+//   .catch((err) => {
+//     console.error("Error al conectar a la base de datos:", err.stack);
+//   });
 
 // import pg from "pg";
 // import dotenv from "dotenv";
@@ -53,3 +53,33 @@ pool
 
 // // Exportar pool para utilizar en otras partes del código
 // export { pool, connectDB };
+
+import Sequelize from "sequelize";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+// Crear la instancia de Sequelize
+const sequelize = new Sequelize(
+  process.env.DB_DATABASE, // Nombre de la base de datos
+  process.env.DB_USER, // Usuario
+  process.env.DB_PASSWORD, // Contraseña
+  {
+    host: process.env.DB_HOST, // Host
+    port: process.env.DB_PORT, // Puerto
+    dialect: "postgres", // Dialecto de la base de datos
+    logging: false, // Opcional: Desactiva los logs SQL en consola
+  }
+);
+
+// Probar la conexión
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log("Conexión exitosa a la base de datos.");
+  })
+  .catch((err) => {
+    console.error("Error al conectar a la base de datos:", err);
+  });
+
+export default sequelize;

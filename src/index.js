@@ -1,13 +1,12 @@
-import express from "express";
+// import express from "express";
 import cors from "cors"; // Importar el middleware CORS
 import dotenv from "dotenv";
-import { createUsersTable } from "./models/user.models.js"; // Función para crear la tabla Users
-import { createContactTable } from "./models/contact.models.js"; // Función para crear la tabla Contact
-import { createOrdersTable } from "./models/order.models.js"; // Función para crear la tabla Orders
-import { createProductTable } from "./models/products.models.js"; // Función para crear la tabla Product
-import { createShipmentTable } from "./models/shipment.models.js"; // Función para crear la tabla Shipment
+import express from "express";
 
-// Importar rutas
+// Importar la conexión y los modelos de Sequelize
+import sequelize from "./db.js"; // Conexión a la base de datos
+
+// Importar las rutas
 import userRoutes from "./routes/user.routes.js";
 import orderRoutes from "./routes/order.routes.js";
 import productRoutes from "./routes/products.routes.js";
@@ -20,23 +19,19 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Configuración de CORS (permitir todos los orígenes)
+// Configuración de CORS
 app.use(cors()); // Esto habilita CORS para **todos los orígenes**
-
 app.use(express.json()); // Middleware para parsear JSON
 
 // Inicializar la base de datos
 const initializeDatabase = async () => {
   try {
-    await createUsersTable();
-    await createContactTable();
-    await createOrdersTable();
-    await createProductTable();
-    await createShipmentTable();
-    console.log("Base de datos inicializada correctamente.");
+    // Sincronizar los modelos con la base de datos
+    await sequelize.sync({ force: false }); // `force: false` evitará eliminar las tablas existentes
+    console.log("Base de datos sincronizada correctamente.");
   } catch (err) {
-    console.error("Error al inicializar la base de datos:", err.stack);
-    throw err; // Lanza el error para detener el servidor si la DB no se inicializa correctamente
+    console.error("Error al sincronizar la base de datos:", err.stack);
+    throw err; // Lanza el error para detener el servidor si la DB no se sincroniza correctamente
   }
 };
 
