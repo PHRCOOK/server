@@ -20,7 +20,10 @@ const port = process.env.PORT || 3001;
 // Middleware CORS personalizado para permitir todos los orígenes
 const corsMiddleware = (req, res, next) => {
   // Permitir todos los orígenes (cambiar esto para producción si es necesario)
-  res.header("Access-Control-Allow-Origin", "*"); // Permite todos los orígenes
+  res.header(
+    "Access-Control-Allow-Origin",
+    "*,https://server-production-8a72.up.railway.app/"
+  ); // Permite todos los orígenes
 
   // Métodos permitidos
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
