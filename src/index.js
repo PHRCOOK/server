@@ -1,7 +1,6 @@
-// import express from "express";
+import express from "express";
 import cors from "cors"; // Importar el middleware CORS
 import dotenv from "dotenv";
-import express from "express";
 
 // Importar la conexión y los modelos de Sequelize
 import sequelize from "./db.js"; // Conexión a la base de datos
@@ -20,7 +19,17 @@ const app = express();
 const port = process.env.PORT || 3001;
 
 // Configuración de CORS
-app.use(cors()); // Esto habilita CORS para **todos los orígenes**
+const corsOptions = {
+  origin:
+    process.env.NODE_ENV === "production"
+      ? "https://miapp.com" // Reemplaza con tu dominio de producción
+      : "http://localhost:5173", // Origen para desarrollo
+  methods: ["GET", "POST", "PUT", "DELETE"], // Métodos permitidos
+  allowedHeaders: ["Content-Type", "Authorization"], // Encabezados permitidos
+};
+
+// Configurar CORS con las opciones personalizadas
+app.use(cors(corsOptions)); // Esto habilita CORS solo para el origen especificado
 app.use(express.json()); // Middleware para parsear JSON
 
 // Inicializar la base de datos
