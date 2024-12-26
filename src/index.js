@@ -20,14 +20,14 @@ const port = process.env.PORT || 3001;
 
 // Configuración de CORS para permitir todos los orígenes
 const corsOptions = {
-  origin: "*", // Permitir todos los orígenes
+  origin: "http://localhost:5173", // Permitir solo el origen de tu aplicación front-end
   methods: ["GET", "POST", "PUT", "DELETE"], // Métodos permitidos
   allowedHeaders: ["Content-Type", "Authorization"], // Encabezados permitidos
   credentials: true, // Si el servidor requiere autenticación (cookies, sesiones)
 };
 
 // Habilitar CORS con las opciones configuradas
-app.use(cors(corsOptions)); // Esto habilita CORS para **todos** los orígenes
+app.use(cors(corsOptions)); // Esto habilita CORS para el origen especificado
 app.use(express.json()); // Middleware para parsear JSON
 
 // Inicializar la base de datos
@@ -43,11 +43,11 @@ const initializeDatabase = async () => {
 };
 
 // Rutas
-app.use("/api", userRoutes); // Rutas de Usuarios
-app.use("/api", orderRoutes); // Rutas de Pedidos
-app.use("/api", productRoutes); // Rutas de Productos
-app.use("/api", shipmentRoutes); // Rutas de Envíos
-app.use("/api", contactRoutes); // Rutas de Contactos
+app.use("/api/users", userRoutes); // Rutas de Usuarios
+app.use("/api/orders", orderRoutes); // Rutas de Pedidos
+app.use("/api/products", productRoutes); // Rutas de Productos
+app.use("/api/shipments", shipmentRoutes); // Rutas de Envíos
+app.use("/api/contacts", contactRoutes); // Rutas de Contactos
 
 // Iniciar el servidor y la base de datos
 initializeDatabase()
