@@ -19,14 +19,20 @@ const port = process.env.PORT || 3001;
 
 // Middleware CORS personalizado para permitir todos los orígenes
 const corsMiddleware = (req, res, next) => {
-  // Permitir todos los orígenes
+  // Permitir todos los orígenes (cambiar esto para producción si es necesario)
   res.header("Access-Control-Allow-Origin", "*"); // Permite todos los orígenes
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS"); // Métodos permitidos
+
+  // Métodos permitidos
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+
+  // Cabeceras permitidas
   res.header(
     "Access-Control-Allow-Headers",
     "Content-Type, Authorization, X-Requested-With, Accept"
-  ); // Cabeceras permitidas
-  res.header("Access-Control-Allow-Credentials", "true"); // Permite el uso de cookies y credenciales (si es necesario)
+  );
+
+  // Permite cookies y credenciales
+  res.header("Access-Control-Allow-Credentials", "true");
 
   // Si la solicitud es de tipo OPTIONS (preflight), respondemos con un código 200
   if (req.method === "OPTIONS") {
@@ -37,8 +43,8 @@ const corsMiddleware = (req, res, next) => {
   next();
 };
 
-// Habilitar el middleware CORS personalizado
-app.use(corsMiddleware); // Usamos nuestro middleware CORS personalizado
+// Habilitar el middleware CORS personalizado antes de las rutas
+app.use(corsMiddleware);
 
 // Middleware para parsear JSON en el cuerpo de las solicitudes
 app.use(express.json());
@@ -56,11 +62,11 @@ const initializeDatabase = async () => {
 };
 
 // Rutas
-app.use("/", userRoutes); // Rutas de Usuarios
-app.use("/", orderRoutes); // Rutas de Pedidos
-app.use("/", productRoutes); // Rutas de Productos
-app.use("/", shipmentRoutes); // Rutas de Envíos
-app.use("/", contactRoutes); // Rutas de Contactos
+app.use("/users", userRoutes); // Rutas de Usuarios
+app.use("/orders", orderRoutes); // Rutas de Pedidos
+app.use("/products", productRoutes); // Rutas de Productos
+app.use("/shipments", shipmentRoutes); // Rutas de Envíos
+app.use("/contacts", contactRoutes); // Rutas de Contactos
 
 // Iniciar el servidor y la base de datos
 initializeDatabase()
