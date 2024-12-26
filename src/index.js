@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors"; // Importa el paquete cors
 
 // Importar la conexión y los modelos de Sequelize
 import sequelize from "./db.js"; // Conexión a la base de datos
@@ -17,37 +18,8 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Middleware CORS personalizado para permitir todos los orígenes
-const corsMiddleware = (req, res, next) => {
-  // Permitir todos los orígenes (cambiar esto para producción si es necesario)
-  res.header(
-    "Access-Control-Allow-Origin",
-    "*,https://server-production-8a72.up.railway.app/"
-  ); // Permite todos los orígenes
-
-  // Métodos permitidos
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-
-  // Cabeceras permitidas
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, X-Requested-With, Accept"
-  );
-
-  // Permite cookies y credenciales
-  res.header("Access-Control-Allow-Credentials", "true");
-
-  // Si la solicitud es de tipo OPTIONS (preflight), respondemos con un código 200
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200); // Responder con un OK para las solicitudes OPTIONS (preflight request)
-  }
-
-  // Continuar con el siguiente middleware o ruta
-  next();
-};
-
-// Habilitar el middleware CORS personalizado antes de las rutas
-app.use(corsMiddleware);
+// Habilitar el middleware CORS utilizando el paquete cors
+app.use(cors()); // Esto permite todos los orígenes por defecto
 
 // Middleware para parsear JSON en el cuerpo de las solicitudes
 app.use(express.json());
