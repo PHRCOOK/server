@@ -22,8 +22,11 @@ const corsMiddleware = (req, res, next) => {
   // Permitir todos los orígenes
   res.header("Access-Control-Allow-Origin", "*"); // Permite todos los orígenes
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS"); // Métodos permitidos
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization"); // Cabeceras permitidas
-  res.header("Access-Control-Allow-Credentials", "true"); // Permite el uso de cookies y credenciales
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, X-Requested-With, Accept"
+  ); // Cabeceras permitidas
+  res.header("Access-Control-Allow-Credentials", "true"); // Permite el uso de cookies y credenciales (si es necesario)
 
   // Si la solicitud es de tipo OPTIONS (preflight), respondemos con un código 200
   if (req.method === "OPTIONS") {
