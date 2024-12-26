@@ -124,9 +124,8 @@
 //   }
 // };
 
-// controllers/userController.js
 import bcrypt from "bcryptjs";
-import { User } from "../models/user.models.js"; // Importamos el modelo User
+import { User, ROLES } from "../models/user.models.js"; // Importamos el modelo User y los roles
 
 // Obtener todos los usuarios
 export const getUsers = async (req, res) => {
@@ -168,11 +167,26 @@ export const createUser = async (req, res) => {
       .json({ message: "Todos los campos son requeridos." });
   }
 
+  // Validación de rol
+  if (!Object.values(ROLES).includes(role)) {
+    return res.status(400).json({
+      message:
+        "El rol debe ser uno de los siguientes: admin, vendor, client, shipment.",
+    });
+  }
+
   try {
+    // Verificar si el correo ya existe
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ message: "El correo ya está registrado." });
+    }
+
     // Encriptar la contraseña
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Crear el usuario
     const user = await User.create({
       email,
       password: hashedPassword,
@@ -202,26 +216,44 @@ export const updateUser = async (req, res) => {
       .json({ message: "Todos los campos son requeridos." });
   }
 
+  // Validación de rol
+  if (!Object.values(ROLES).includes(role)) {
+    return res.status(400).json({
+      message:
+        "El rol debe ser uno de los siguientes: admin, vendor, client, shipment.",
+    });
+  }
+
   try {
-    // Encriptar la contraseña
+    // Buscar el usuario por ID
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Verificar si el correo ya está registrado por otro usuario (excepto el usuario actual)
+    const existingUser = await User.findOne({
+      where: { email, id: { [Op.ne]: id } },
+    });
+    if (existingUser) {
+      return res.status(400).json({ message: "El correo ya está registrado." });
+    }
+
+    // Encriptar la nueva contraseña
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const user = await User.findByPk(id); // Buscar el usuario por ID
-    if (user) {
-      user.email = email;
-      user.password = hashedPassword;
-      user.name = name;
-      user.address = address;
-      user.dni = dni;
-      user.role = role;
+    // Actualizar los datos del usuario
+    user.email = email;
+    user.password = hashedPassword;
+    user.name = name;
+    user.address = address;
+    user.dni = dni;
+    user.role = role;
 
-      await user.save(); // Guardamos los cambios en la base de datos
+    await user.save(); // Guardar los cambios
 
-      res.status(200).json(user); // Respondemos con el usuario actualizado
-    } else {
-      res.status(404).json({ message: "Usuario no encontrado" });
-    }
+    res.status(200).json(user); // Respondemos con el usuario actualizado
   } catch (err) {
     res
       .status(500)
@@ -235,7 +267,7 @@ export const deleteUser = async (req, res) => {
   try {
     const user = await User.findByPk(id); // Buscar el usuario por ID
     if (user) {
-      await user.destroy(); // Eliminar el usuario de la base de datos
+      await user.destroy(); // Eliminar el usuario
       res.status(200).json({ message: "Usuario eliminado" });
     } else {
       res.status(404).json({ message: "Usuario no encontrado" });
