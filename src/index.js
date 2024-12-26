@@ -32,7 +32,7 @@ const corsMiddleware = (req, res, next) => {
   );
 
   // Permite cookies y credenciales
-  res.header("Access-Control-Allow-Credentials", true);
+  res.header("Access-Control-Allow-Credentials", "true");
 
   // Si la solicitud es de tipo OPTIONS (preflight), respondemos con un código 200
   if (req.method === "OPTIONS") {
@@ -62,11 +62,11 @@ const initializeDatabase = async () => {
 };
 
 // Rutas
-app.use("/users", userRoutes); // Rutas de Usuarios
-app.use("/orders", orderRoutes); // Rutas de Pedidos
-app.use("/products", productRoutes); // Rutas de Productos
-app.use("/shipments", shipmentRoutes); // Rutas de Envíos
-app.use("/contacts", contactRoutes); // Rutas de Contactos
+app.use("/", userRoutes); // Rutas de Usuarios
+app.use("/", orderRoutes); // Rutas de Pedidos
+app.use("/", productRoutes); // Rutas de Productos
+app.use("/", shipmentRoutes); // Rutas de Envíos
+app.use("/", contactRoutes); // Rutas de Contactos
 
 // Iniciar el servidor y la base de datos
 initializeDatabase()
