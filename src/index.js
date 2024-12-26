@@ -18,18 +18,16 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Configuración de CORS
+// Configuración de CORS para permitir todos los orígenes
 const corsOptions = {
-  origin:
-    process.env.NODE_ENV === "production"
-      ? "https://miapp.com" // Reemplaza con tu dominio de producción
-      : "http://localhost:5173", // Origen para desarrollo
+  origin: "*", // Permitir todos los orígenes
   methods: ["GET", "POST", "PUT", "DELETE"], // Métodos permitidos
   allowedHeaders: ["Content-Type", "Authorization"], // Encabezados permitidos
+  credentials: true, // Si el servidor requiere autenticación (cookies, sesiones)
 };
 
-// Configurar CORS con las opciones personalizadas
-app.use(cors(corsOptions)); // Esto habilita CORS solo para el origen especificado
+// Habilitar CORS con las opciones configuradas
+app.use(cors(corsOptions)); // Esto habilita CORS para **todos** los orígenes
 app.use(express.json()); // Middleware para parsear JSON
 
 // Inicializar la base de datos
