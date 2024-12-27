@@ -1,32 +1,3 @@
-// // models/contact.js
-// import { pool } from "../db.js";
-
-// // Consulta SQL para crear la tabla `Contact`
-// const createContactTableQuery = `
-//   CREATE TABLE IF NOT EXISTS Contact (
-//     id SERIAL PRIMARY KEY,
-//     nombre VARCHAR(255) NOT NULL,
-//     correo VARCHAR(255) NOT NULL,
-//     mensaje TEXT NOT NULL,
-//     "userId" INTEGER,
-//     FOREIGN KEY ("userId") REFERENCES Users(id)
-//   );
-// `;
-
-// // Función para crear la tabla `Contact` en la base de datos
-// export const createContactTable = async () => {
-//   try {
-//     const client = await pool.connect();
-//     console.log("Conexión exitosa a la base de datos.");
-//     await client.query(createContactTableQuery);
-//     console.log("Tabla `Contact` creada (si no existía).");
-//     client.release();
-//   } catch (err) {
-//     console.error("Error al crear la tabla `Contact`:", err.stack);
-//   }
-// };
-
-// models/contact.js
 import { DataTypes } from "sequelize";
 import sequelize from "../db.js";
 import { User } from "./user.models.js"; // Importamos el modelo User para establecer la relación
@@ -70,14 +41,3 @@ export const Contact = sequelize.define(
 // Establecer la relación de "uno a muchos" entre User y Contact
 User.hasMany(Contact, { foreignKey: "userId" });
 Contact.belongsTo(User, { foreignKey: "userId" });
-
-// Función para crear la tabla si no existe
-export const createContactTable = async () => {
-  try {
-    // Sincronizamos la base de datos (esto crea las tablas si no existen)
-    await Contact.sync({ force: false }); // 'force: false' asegura que no se borren datos si ya existen
-    console.log("Tabla `Contact` creada (si no existía).");
-  } catch (err) {
-    console.error("Error al crear la tabla `Contact`:", err);
-  }
-};
