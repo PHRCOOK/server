@@ -1,36 +1,3 @@
-// // models/order.js
-
-// import { pool } from "../db.js";
-
-// const createOrdersTableQuery = `
-//   CREATE TABLE IF NOT EXISTS Orders (
-//     id SERIAL PRIMARY KEY,
-//     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-//     name VARCHAR(255) NOT NULL,
-//     count INTEGER NOT NULL,
-//     price FLOAT NOT NULL,
-//     userName VARCHAR(255) NOT NULL,
-//     userEmail VARCHAR(255) NOT NULL,
-//     userType VARCHAR(50) NOT NULL,
-//     userId INTEGER,
-//     address VARCHAR(255),
-//     dni VARCHAR(255),
-//     FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE
-//   );
-// `;
-
-// export const createOrdersTable = async () => {
-//   try {
-//     const client = await pool.connect();
-//     await client.query(createOrdersTableQuery);
-//     console.log("Tabla `Orders` creada (si no existía).");
-//     client.release();
-//   } catch (err) {
-//     console.error("Error al crear la tabla `Orders`:", err.stack);
-//   }
-// };
-
-// models/order.js
 import { DataTypes } from "sequelize";
 import sequelize from "../db.js";
 import { User } from "./user.models.js"; // Importamos el modelo User para establecer la relación
@@ -78,7 +45,7 @@ export const Order = sequelize.define(
         model: User, // Referencia al modelo `User`
         key: "id",
       },
-      onDelete: "CASCADE", // Si un usuario se elimina, los pedidos asociados también se eliminan
+      onDelete: "CASCADE",
     },
     address: {
       type: DataTypes.STRING,
@@ -89,21 +56,10 @@ export const Order = sequelize.define(
   },
   {
     tableName: "Orders",
-    timestamps: false, // No usar timestamps, ya que la fecha ya está definida como `date`
+    timestamps: false,
   }
 );
 
-// Establecer la relación de "uno a muchos" entre User y Order
+// Establecer la relación entre User y Order
 User.hasMany(Order, { foreignKey: "userId" });
 Order.belongsTo(User, { foreignKey: "userId" });
-
-// Función para crear la tabla si no existe
-export const createOrdersTable = async () => {
-  try {
-    // Sincronizamos la base de datos (esto crea las tablas si no existen)
-    await Order.sync({ force: false }); // 'force: false' asegura que no se borren datos si ya existen
-    console.log("Tabla `Orders` creada (si no existía).");
-  } catch (err) {
-    console.error("Error al crear la tabla `Orders`:", err);
-  }
-};
