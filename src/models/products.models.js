@@ -1,4 +1,3 @@
-//
 // models/product.js
 import { DataTypes } from "sequelize";
 import sequelize from "../db.js";
@@ -16,20 +15,33 @@ export const Product = sequelize.define(
     name: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        notEmpty: true, // Aseguramos que el nombre no esté vacío
+      },
     },
     price: {
       type: DataTypes.FLOAT,
       allowNull: false,
+      validate: {
+        isFloat: true, // Aseguramos que el precio sea un número flotante
+        min: 0, // El precio debe ser mayor o igual a 0
+      },
     },
     description: {
       type: DataTypes.STRING,
+      allowNull: true, // No es obligatorio
     },
     image: {
       type: DataTypes.STRING,
+      allowNull: true, // No es obligatorio
     },
     stock: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      validate: {
+        isInt: true, // Aseguramos que el stock sea un número entero
+        min: 0, // El stock debe ser mayor o igual a 0
+      },
     },
     userId: {
       type: DataTypes.INTEGER,
@@ -41,8 +53,8 @@ export const Product = sequelize.define(
     },
   },
   {
-    tableName: "Product",
-    timestamps: false, // No usar timestamps ya que no son necesarios en este caso
+    tableName: "Products", // Cambié a plural para alinearlo con las convenciones
+    timestamps: true, // Añadí timestamps para registrar la creación y actualización del producto
   }
 );
 
@@ -53,10 +65,9 @@ Product.belongsTo(User, { foreignKey: "userId" });
 // Función para crear la tabla si no existe
 export const createProductTable = async () => {
   try {
-    // Sincronizamos la base de datos (esto crea las tablas si no existen)
     await Product.sync({ force: false }); // 'force: false' asegura que no se borren datos si ya existen
-    console.log("Tabla `Product` creada (si no existía).");
+    console.log("Tabla `Products` creada (si no existía).");
   } catch (err) {
-    console.error("Error al crear la tabla `Product`:", err);
+    console.error("Error al crear la tabla `Products`:", err);
   }
 };
