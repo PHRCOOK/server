@@ -36,12 +36,12 @@ const initializeDatabase = async () => {
   }
 };
 
-// Rutas
-app.use("/", userRoutes); // Rutas de Usuarios
-app.use("/", orderRoutes); // Rutas de Pedidos
-app.use("/", productRoutes); // Rutas de Productos
-app.use("/", shipmentRoutes); // Rutas de Envíos
-app.use("/", contactRoutes); // Rutas de Contactos
+// Rutas con prefijo "/api"
+app.use("/api", userRoutes); // Rutas de Usuarios
+app.use("/api", orderRoutes); // Rutas de Pedidos
+app.use("/api", productRoutes); // Rutas de Productos
+app.use("/api", shipmentRoutes); // Rutas de Envíos
+app.use("/api", contactRoutes); // Rutas de Contactos
 
 // Iniciar el servidor y la base de datos
 initializeDatabase()
