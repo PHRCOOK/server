@@ -60,9 +60,9 @@ export const createProduct = async (req, res) => {
 // Actualizar un producto por ID
 export const updateProduct = async (req, res) => {
   const { id } = req.params;
-  const { name, price, description, image, stock, userId } = req.body;
+  const { stock } = req.body; // Asegúrate de obtener solo el campo stock del cuerpo
 
-  // Validación de stock
+  // Validación del stock
   if (typeof stock !== "number" || stock < 0) {
     return res.status(400).json({ message: "El valor de stock no es válido." });
   }
@@ -70,29 +70,24 @@ export const updateProduct = async (req, res) => {
   try {
     const product = await Product.findByPk(id); // Buscar el producto por ID
     if (product) {
-      // Actualizar los valores del producto
-      product.name = name;
-      product.price = price;
-      product.description = description;
-      product.image = image;
+      // Actualizamos el stock
       product.stock = stock;
-      product.userId = userId;
 
-      await product.save(); // Guardamos los cambios en la base de datos
+      // Guardamos los cambios
+      await product.save();
 
       res.status(200).json(product); // Respondemos con el producto actualizado
     } else {
       res.status(404).json({ message: "Producto no encontrado" });
     }
   } catch (err) {
-    console.error("Error al actualizar el producto:", err); // Agregar log detallado
+    console.error("Error al actualizar el producto:", err); // Log de error
     res.status(500).json({
       message: "Error al actualizar el producto",
       error: err.message,
     });
   }
 };
-
 // Eliminar un producto por ID
 export const deleteProduct = async (req, res) => {
   const { id } = req.params;
