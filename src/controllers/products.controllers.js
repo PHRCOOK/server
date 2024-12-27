@@ -1,4 +1,3 @@
-// controllers/products.controllers.js
 import { Product } from "../models/products.models.js"; // Importamos el modelo Product
 
 // Obtener todos los productos
@@ -63,9 +62,15 @@ export const updateProduct = async (req, res) => {
   const { id } = req.params;
   const { name, price, description, image, stock, userId } = req.body;
 
+  // Validación de stock
+  if (typeof stock !== "number" || stock < 0) {
+    return res.status(400).json({ message: "El valor de stock no es válido." });
+  }
+
   try {
     const product = await Product.findByPk(id); // Buscar el producto por ID
     if (product) {
+      // Actualizar los valores del producto
       product.name = name;
       product.price = price;
       product.description = description;
@@ -80,9 +85,11 @@ export const updateProduct = async (req, res) => {
       res.status(404).json({ message: "Producto no encontrado" });
     }
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error al actualizar el producto", error: err.message });
+    console.error("Error al actualizar el producto:", err); // Agregar log detallado
+    res.status(500).json({
+      message: "Error al actualizar el producto",
+      error: err.message,
+    });
   }
 };
 
@@ -98,6 +105,7 @@ export const deleteProduct = async (req, res) => {
       res.status(404).json({ message: "Producto no encontrado" });
     }
   } catch (err) {
+    console.error("Error al eliminar el producto:", err); // Agregar log detallado
     res
       .status(500)
       .json({ message: "Error al eliminar el producto", error: err.message });
