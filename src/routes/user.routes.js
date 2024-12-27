@@ -16,6 +16,6 @@ router.get("/users/:id", getUserById); // Obtener un usuario por ID
 router.post("/users", createUser); // Crear un nuevo usuario
 router.put("/users/:id", updateUser); // Actualizar un usuario por ID
 router.delete("/users/:id", deleteUser); // Eliminar un usuario por ID
-router.post("/login", loginUser);
+router.post("/users/login", loginUser);
 
 export default router;
