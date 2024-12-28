@@ -62,7 +62,6 @@ export const updateProduct = async (req, res) => {
   const { id } = req.params;
   const { name, price, description, image, stock } = req.body;
 
-  // Buscar el producto por ID
   try {
     const product = await Product.findByPk(id); // Buscar el producto por su ID
     if (!product) {
@@ -104,6 +103,7 @@ export const updateProduct = async (req, res) => {
       .json({ message: "Error al actualizar el producto", error: err.message });
   }
 };
+
 // Eliminar un producto por ID
 export const deleteProduct = async (req, res) => {
   const { id } = req.params;
