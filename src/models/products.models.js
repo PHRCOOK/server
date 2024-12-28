@@ -1,3 +1,4 @@
+// models/product.js
 import { DataTypes } from "sequelize";
 import sequelize from "../db.js";
 import { User } from "./user.models.js"; // Importamos el modelo User para la relación
