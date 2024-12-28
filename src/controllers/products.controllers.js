@@ -57,35 +57,51 @@ export const createProduct = async (req, res) => {
   }
 };
 
-// Actualizar un producto por ID
+// Actualizar un producto por ID (permite modificar varios campos)
 export const updateProduct = async (req, res) => {
   const { id } = req.params;
-  const { stock } = req.body; // Asegúrate de obtener solo el campo stock del cuerpo
+  const { name, price, description, image, stock } = req.body;
 
-  // Validación del stock
-  if (typeof stock !== "number" || stock < 0) {
-    return res.status(400).json({ message: "El valor de stock no es válido." });
-  }
-
+  // Buscar el producto por ID
   try {
-    const product = await Product.findByPk(id); // Buscar el producto por ID
-    if (product) {
-      // Actualizamos el stock
-      product.stock = stock;
-
-      // Guardamos los cambios
-      await product.save();
-
-      res.status(200).json(product); // Respondemos con el producto actualizado
-    } else {
-      res.status(404).json({ message: "Producto no encontrado" });
+    const product = await Product.findByPk(id); // Buscar el producto por su ID
+    if (!product) {
+      return res.status(404).json({ message: "Producto no encontrado" });
     }
-  } catch (err) {
-    console.error("Error al actualizar el producto:", err); // Log de error
-    res.status(500).json({
-      message: "Error al actualizar el producto",
-      error: err.message,
+
+    // Validaciones adicionales si es necesario
+    if (price && (typeof price !== "number" || price <= 0)) {
+      return res
+        .status(400)
+        .json({ message: "El precio debe ser un número positivo." });
+    }
+
+    if (stock !== undefined && (typeof stock !== "number" || stock < 0)) {
+      return res
+        .status(400)
+        .json({ message: "El stock debe ser un número no negativo." });
+    }
+
+    // Actualizar los campos solo si están presentes
+    if (name) product.name = name;
+    if (price) product.price = price;
+    if (description) product.description = description;
+    if (image) product.image = image;
+    if (stock !== undefined) product.stock = stock;
+
+    // Guardamos los cambios
+    await product.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Producto actualizado con éxito",
+      data: product,
     });
+  } catch (err) {
+    console.error("Error al actualizar el producto:", err.stack);
+    res
+      .status(500)
+      .json({ message: "Error al actualizar el producto", error: err.message });
   }
 };
 // Eliminar un producto por ID
